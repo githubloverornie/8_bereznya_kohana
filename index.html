@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>З 8 Березня 🌸</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    /* === CSS VARIABLES === */
+    :root {
+      --black:        #0a0005;
+      --deep:         #130010;
+      --rose-dark:    #7a1040;
+      --rose:         #c0185a;
+      --rose-mid:     #e0307a;
+      --pink:         #f472b6;
+      --pink-light:   #fbb6d4;
+      --blush:        #fce4f0;
+      --gold:         #f7c6d8;
+      --white:        #fff5f9;
+    }
+
+    /* === RESET === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* === CANVAS FOR FLOATING ELEMENTS === */
+    #particles-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* === NOISE OVERLAY === */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* === VIGNETTE === */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* === WRAPPER === */
+    .wrapper {
+      position: relative;
+      z-index: 10;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 60px 24px 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 80px;
+    }
+
+    /* ================================
+       HERO SECTION
+    ================================ */
+    .hero {
+      text-align: center;
+      padding: 80px 20px 40px;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.1rem;
+      color: var(--pink);
+      letter-spacing: 0.15em;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(3rem, 10vw, 7rem);
+      font-weight: 700;
+      line-height: 1.05;
+      color: transparent;
+      background: linear-gradient(135deg, var(--pink-light) 0%, var(--rose-mid) 40%, var(--pink) 70%, var(--rose-dark) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.5s forwards;
+    }
+
+    .hero-title span {
+      font-style: italic;
+      display: block;
+    }
+
+    .hero-sub {
+      margin-top: 20px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 3vw, 1.35rem);
+      font-weight: 300;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.75s forwards;
+    }
+
+    .hero-divider {
+      margin: 36px auto 0;
+      width: 120px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--rose-mid), transparent);
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.95s forwards;
+    }
+
+    /* ================================
+       TEXT BLOCK
+    ================================ */
+    .text-block {
+      position: relative;
+      background: linear-gradient(135deg, rgba(122,16,64,0.18), rgba(192,24,90,0.08));
+      border: 1px solid rgba(244,114,182,0.2);
+      border-radius: 4px;
+      padding: 56px 56px 52px;
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .text-block.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .text-block::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 40px; right: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--rose-mid), transparent);
+    }
+
+    .text-block::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 40px; right: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--rose-mid), transparent);
+    }
+
+    .block-label {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.05rem;
+      color: var(--rose-mid);
+      letter-spacing: 0.12em;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .text-block h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--pink-light);
+      margin-bottom: 28px;
+      line-height: 1.2;
+    }
+
+    .text-block p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-weight: 300;
+      line-height: 1.85;
+      color: rgba(252, 228, 240, 0.85);
+      margin-bottom: 18px;
+    }
+
+    .text-block p:last-child { margin-bottom: 0; }
+
+    .text-block p em {
+      color: var(--pink);
+      font-style: italic;
+    }
+
+    .quote-mark {
+      font-family: 'Playfair Display', serif;
+      font-size: 6rem;
+      color: var(--rose-dark);
+      line-height: 0.5;
+      display: block;
+      margin-bottom: 16px;
+      opacity: 0.6;
+    }
+
+    /* ================================
+       PHOTO BLOCK
+    ================================ */
+    .photos-block {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.9s ease 0.15s, transform 0.9s ease 0.15s;
+    }
+
+    .photos-block.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .photos-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .photos-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--pink-light);
+    }
+
+    .photos-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .photo-card {
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      aspect-ratio: 3/4;
+      cursor: pointer;
+      transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .photo-card:hover { transform: scale(1.025) translateY(-4px); }
+
+    .photo-card:first-child {
+      margin-top: 32px;
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.85) brightness(0.9);
+      transition: filter 0.5s ease, transform 0.6s ease;
+    }
+
+    .photo-card:hover img {
+      filter: saturate(1.1) brightness(1);
+      transform: scale(1.04);
+    }
+
+    /* Pink duotone overlay */
+    .photo-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(192,24,90,0.25) 0%, rgba(10,0,5,0.55) 100%);
+      z-index: 2;
+      transition: opacity 0.4s ease;
+    }
+
+    .photo-card:hover::before { opacity: 0.5; }
+
+    /* Frame border */
+    .photo-card::after {
+      content: '';
+      position: absolute;
+      inset: 10px;
+      border: 1px solid rgba(244,114,182,0.35);
+      z-index: 3;
+      transition: border-color 0.4s ease;
+    }
+
+    .photo-card:hover::after { border-color: rgba(244,114,182,0.7); }
+
+    .photo-caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 32px 20px 20px;
+      background: linear-gradient(0deg, rgba(10,0,5,0.85) 0%, transparent 100%);
+      z-index: 4;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.3rem;
+      color: var(--pink-light);
+      text-align: center;
+    }
+
+    /* Placeholder photo — gradient art if no real image */
+    .photo-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      background: linear-gradient(135deg, var(--deep) 0%, var(--rose-dark) 100%);
+    }
+
+    /* ================================
+       CLOSING SECTION
+    ================================ */
+    .closing {
+      text-align: center;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.9s ease 0.2s, transform 0.9s ease 0.2s;
+    }
+
+    .closing.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .closing-emoji {
+      font-size: 3.5rem;
+      display: block;
+      margin-bottom: 20px;
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    .closing h2 {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2rem, 6vw, 4rem);
+      color: transparent;
+      background: linear-gradient(135deg, var(--pink-light), var(--rose-mid), var(--pink));
+      -webkit-background-clip: text;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+
+    .closing p {
+      font-size: 1.1rem;
+      color: var(--gold);
+      font-style: italic;
+      letter-spacing: 0.06em;
+    }
+
+    /* Petal ring animation around closing */
+    .petal-ring {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 32px;
+    }
+
+    .petal-ring svg {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: slowSpin 20s linear infinite;
+      opacity: 0.3;
+      width: 200px; height: 200px;
+    }
+
+    /* ================================
+       KEYFRAMES
+    ================================ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.12); }
+    }
+
+    @keyframes slowSpin {
+      to { transform: translate(-50%,-50%) rotate(360deg); }
+    }
+
+    /* ================================
+       RESPONSIVE
+    ================================ */
+    @media (max-width: 600px) {
+      .text-block { padding: 36px 28px; }
+      .photos-grid { grid-template-columns: 1fr; }
+      .photo-card:first-child { margin-top: 0; }
+      .photo-card { aspect-ratio: 4/3; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating particles canvas -->
+  <canvas id="particles-canvas"></canvas>
+
+  <div class="wrapper">
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+      <span class="hero-badge">✦ 8 березня ✦</span>
+      <h1 class="hero-title">
+        З Міжнародним
+        <span>Жіночим Днем</span>
+      </h1>
+      <p class="hero-sub">Для найпрекраснішої людини у моєму житті</p>
+      <div class="hero-divider"></div>
+    </section>
+
+    <!-- ===== TEXT BLOCK ===== -->
+    <section class="text-block scroll-reveal">
+      <span class="block-label">✦ з усієї душі ✦</span>
+      <span class="quote-mark">"</span>
+      <h2>Ти — моє найкраще, що трапилось зі мною</h2>
+      <p>
+        Сьогодні особливий день, але насправді кожен день поруч із тобою — свято.
+        Ти наповнюєш цей світ теплом, ніжністю і тим особливим <em>світлом</em>,
+        яке змушує сонце виглядати тьмяніше.
+      </p>
+      <p>
+        Ти сильна, коли потрібно бути кам'яною стіною, і м'яка, коли серце просить
+        ніжності. Ти — <em>мистецтво</em>, яке неможливо описати словами, але яке
+        відчуваєш кожною клітинкою душі.
+      </p>
+      <p>
+        Нехай цей день принесе тобі стільки радості, скільки ти даруєш іншим щодня.
+        Нехай квіти пахнуть солодше, небо буде блакитнішим, а серце — легшим. 🌸
+      </p>
+    </section>
+
+    <!-- ===== PHOTOS BLOCK ===== -->
+    <section class="photos-block scroll-reveal">
+      <div class="photos-header">
+        <span class="block-label">✦ мить за миттю ✦</span>
+        <h2>Наші найкращі моменти</h2>
+      </div>
+      <div class="photos-grid">
+
+        <div class="photo-card">
+          <!-- Replace src with your real photo URL -->
+          <div class="photo-placeholder">🌸</div>
+          <div class="photo-caption">Перша наша весна</div>
+        </div>
+
+        <div class="photo-card">
+          <!-- Replace src with your real photo URL -->
+          <div class="photo-placeholder">💕</div>
+          <div class="photo-caption">Завжди разом</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== CLOSING ===== -->
+    <section class="closing scroll-reveal">
+      <div class="petal-ring">
+        <!-- decorative SVG ring -->
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="90" fill="none" stroke="#c0185a" stroke-width="0.8" stroke-dasharray="6 10"/>
+          <circle cx="100" cy="100" r="75" fill="none" stroke="#f472b6" stroke-width="0.5" stroke-dasharray="3 14"/>
+        </svg>
+        <span class="closing-emoji">💗</span>
+      </div>
+      <h2>Люблю тебе!</h2>
+      <p>З 8 березня, моя кохана ✨</p>
+    </section>
+
+  </div><!-- /.wrapper -->
+
+  <script>
+    /* ============================================================
+       FLOATING PARTICLES — hearts, flowers, dots
+    ============================================================ */
+    const canvas = document.getElementById('particles-canvas');
+    const ctx    = canvas.getContext('2d');
+
+    const SYMBOLS = ['♥','❤','💕','🌸','🌷','✿','❀','♡','✦','·'];
+    const COLORS  = [
+      'rgba(244,114,182,',  // pink
+      'rgba(192,24,90,',    // rose
+      'rgba(224,48,122,',   // rose-mid
+      'rgba(251,182,212,',  // pink-light
+      'rgba(247,198,216,',  // gold
+      'rgba(240,80,150,',   // custom
+    ];
+
+    let W, H, particles;
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function randomBetween(a, b) { return a + Math.random() * (b - a); }
+
+    function createParticle() {
+      const sym   = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+      const color = COLORS [Math.floor(Math.random() * COLORS.length)];
+      const size  = randomBetween(10, 30);
+      return {
+        x:        randomBetween(0, W),
+        y:        randomBetween(-H, H * 0.1),          // start above or at top
+        vy:       randomBetween(0.35, 1.1),             // fall speed
+        vx:       randomBetween(-0.45, 0.45),           // drift
+        rot:      randomBetween(0, Math.PI * 2),
+        rotSpeed: randomBetween(-0.012, 0.012),
+        size,
+        symbol:   sym,
+        color,
+        alpha:    randomBetween(0.15, 0.65),
+        alphaDir: Math.random() > 0.5 ? 0.003 : -0.003,
+        wobble:   randomBetween(0, Math.PI * 2),
+        wobbleSpeed: randomBetween(0.01, 0.025),
+      };
+    }
+
+    function initParticles(count = 80) {
+      particles = [];
+      for (let i = 0; i < count; i++) {
+        const p = createParticle();
+        // scatter vertically so they're not all at top on load
+        p.y = randomBetween(-H * 0.2, H * 1.1);
+        particles.push(p);
+      }
+    }
+
+    function drawParticle(p) {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+
+      ctx.globalAlpha = p.alpha;
+      ctx.font = `${p.size}px serif`;
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+
+      // soft glow
+      ctx.shadowColor = p.color + '0.7)';
+      ctx.shadowBlur  = 8;
+
+      ctx.fillStyle = p.color + p.alpha + ')';
+      ctx.fillText(p.symbol, 0, 0);
+
+      ctx.restore();
+    }
+
+    function tick() {
+      ctx.clearRect(0, 0, W, H);
+
+      particles.forEach(p => {
+        p.wobble += p.wobbleSpeed;
+        p.x += p.vx + Math.sin(p.wobble) * 0.3;
+        p.y += p.vy;
+        p.rot += p.rotSpeed;
+
+        // alpha pulse
+        p.alpha += p.alphaDir;
+        if (p.alpha > 0.68 || p.alpha < 0.08) p.alphaDir *= -1;
+
+        // recycle when off-screen bottom
+        if (p.y > H + 40) {
+          Object.assign(p, createParticle());
+          p.y = -40;
+        }
+        // recycle horizontal
+        if (p.x < -40) p.x = W + 40;
+        if (p.x > W + 40) p.x = -40;
+
+        drawParticle(p);
+      });
+
+      requestAnimationFrame(tick);
+    }
+
+    resize();
+    window.addEventListener('resize', () => { resize(); initParticles(); });
+    initParticles();
+    tick();
+
+    /* ============================================================
+       SCROLL REVEAL
+    ============================================================ */
+    const revealEls = document.querySelectorAll('.scroll-reveal');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    revealEls.forEach(el => observer.observe(el));
+
+    /* ============================================================
+       CURSOR TRAIL (desktop only)
+    ============================================================ */
+    if (window.matchMedia('(pointer: fine)').matches) {
+      const trailSymbols = ['♥','✿','❀','·'];
+      document.addEventListener('mousemove', e => {
+        if (Math.random() > 0.75) return; // throttle
+        const el = document.createElement('span');
+        el.textContent = trailSymbols[Math.floor(Math.random() * trailSymbols.length)];
+        Object.assign(el.style, {
+          position:   'fixed',
+          left:       e.clientX + 'px',
+          top:        e.clientY + 'px',
+          pointerEvents: 'none',
+          fontSize:   Math.random() * 14 + 10 + 'px',
+          color:      `hsl(${Math.round(Math.random()*40 + 320)}, 80%, 75%)`,
+          zIndex:     9999,
+          transform:  'translate(-50%,-50%)',
+          transition: 'opacity 0.7s ease, transform 0.7s ease',
+          opacity:    '0.85',
+          userSelect: 'none',
+        });
+        document.body.appendChild(el);
+        requestAnimationFrame(() => {
+          el.style.transform = `translate(-50%, -${Math.random()*40+30}px) scale(0.5)`;
+          el.style.opacity   = '0';
+        });
+        setTimeout(() => el.remove(), 750);
+      });
+    }
+  </script>
+</body>
+</html>
